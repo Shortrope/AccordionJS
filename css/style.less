@@ -1,0 +1,32 @@
+@bodyWidth: 800px;
+@Oswald: 'Oswald', sans-serif;
+@Quattro: 'Quattrocento Sans', sans-serif;
+@headingColor: #444;
+@textColor: #666;
+
+body {
+  font-family: @Quattro;
+  color: @textColor;
+  line-height: 1.5em;
+  width: @bodyWidth;
+  margin: 40px auto;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: @Oswald;
+  color: @headingColor;
+}
+header {
+  margin-bottom: 80px;
+}
+section {
+width: 70%;
+float: left;
+}
+footer {
+  width: 25%;
+  float: right;
+}
+[data-accordion-target] {
+  font-weight: bold;
+  cursor: pointer;
+}
