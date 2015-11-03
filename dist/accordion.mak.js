@@ -1,3 +1,4 @@
+/*jslint white: true*/
 (function () {
 
     'use strict';
@@ -55,6 +56,7 @@
     function addAccordionListener(aSrc, tId, tHeight, singleOpen) {
         aSrc.addEventListener('click', function (e) {
             if (singleOpen) {
+                // close all elements
                 for (i = 0; i < aTargetIds.length; i += 1) {
                     document.getElementById(aTargetIds[i]).style.height = '0';
                 }
@@ -93,4 +95,4 @@
         addAccordionListener(aSources[i], aTargetIds[i], aTargetHeights[i], true);
     }
 
-})();
+}());

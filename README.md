@@ -16,9 +16,9 @@ class="accordion-target"
 	<p>A bunch of whaterver</p>
 </div>
 
-<h3 data-accordion-target="aTarget-2">Source element 1</h3>
+<h3 data-accordion-target="aTarget-2">Source element 2</h3>
 <p id="aTarget-2" class="accordion-target">
-	A bunch of more whaterver
+	A bunch more of  whaterver
 </p>
 ```
 
