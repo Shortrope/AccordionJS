@@ -18,7 +18,7 @@
  *
  */
 
-(function () {
+(document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
     /* VARiables 
@@ -159,4 +159,4 @@
     // add click eventListener to each Source element
     addListenersToSources();
 
-}());
+})());
