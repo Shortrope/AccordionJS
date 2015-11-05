@@ -24,6 +24,7 @@
     /* VARiables 
     =============================================== */
     var singleOpen = true, // single or multiple items open at same time
+        icons = true, // show +/- icons
         aSources, // array of source elements
         aTargetIds = {}; // object that stores target info
 
@@ -68,27 +69,61 @@
 
     /* Sets all target element heights to zero */
     function zeroAllElementHeights() {
-        var tId;
+        var tId, i;
         for (tId in aTargetIds) {
             if (aTargetIds.hasOwnProperty(tId)) {
                 zeroHeight(tId);
+                if (icons) {
+                    for (i = 0; i < aTargetIds[tId].sources.length; i += 1) {
+                        aTargetIds[tId].sources[i].classList.remove('accordion-open');
+                        aTargetIds[tId].sources[i].classList.add('accordion-closed');
+                    }
+                }
             }
         }
     }
 
     /* The Event Handler*/
     function accordionAction(e) {
+        var src = e.target;
         var tId = e.target.getAttribute('data-accordion-target');
         var theTarget = document.getElementById(tId);
+        var prop, i;
 
         if (singleOpen) {
+            // make sure all sources are closed
             zeroAllElementHeights();
+            // and all sources have a class of 'accordion-closed'
+            for (prop in aTargetIds) {
+                if (aTargetIds.hasOwnProperty(prop)) {
+                    if (icons) {
+                        for (i = 0; i < aTargetIds[prop].sources.length; i += 1) {
+                            aTargetIds[prop].sources[i].classList.remove('accordion-open');
+                            aTargetIds[prop].sources[i].classList.add('accordion-closed');
+                        }
+                    }
+                }
+            }
         }
-        // if toggle open / closed state
+        // toggle open/closed state
         if (theTarget.clientHeight === 0) {
+            // open target element
             theTarget.style.height = aTargetIds[tId].height + 'px';
+            // change source(s) icon
+            if (icons) {
+                for (i = 0; i < aTargetIds[tId].sources.length; i += 1) {
+                    aTargetIds[tId].sources[i].classList.remove('accordion-closed');
+                    aTargetIds[tId].sources[i].classList.add('accordion-open');
+                }
+            }
         } else {
             theTarget.style.height = '0';
+            if (icons) {
+                for (i = 0; i < aTargetIds[tId].sources.length; i += 1) {
+                    aTargetIds[tId].sources[i].classList.remove('accordion-open');
+                    aTargetIds[tId].sources[i].classList.add('accordion-closed');
+                }
+            }
         }
     }
 

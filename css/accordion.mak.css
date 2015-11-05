@@ -1,1 +1,3 @@
 .accordion-target { overflow: hidden; transition: height 0.5s; }
+.accordion-open:before { content: '- '; }
+.accordion-closed:before { content: '+ '; }

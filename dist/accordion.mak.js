@@ -1,74 +1,143 @@
-/*jslint white: true*/
-(function () {
+/*jslint vars: true*/
+/*
+ * This is an example of the object used to store target
+ * data: target ids, their sources, and the initial height.
+ * Each target can have multiple sources
+ *
+ * { 
+ *   targId1: {
+ *               sources: [elem, elem,..],
+ *               height: 84
+ *             },
+ *   targId2: {
+ *               sources: [elem, elem,..],
+ *               height: 84
+ *             },
+ *   ...
+ * }   
+ *
+ */
 
+(function () {
     'use strict';
 
     /* VARiables 
     =============================================== */
-    var aSources,
-        aTargetIds,
-        aTargetHeights,
-        i;
+    var singleOpen = true, // single or multiple items open at same time
+        icons = true, // show +/- icons
+        aSources, // array of source elements
+        aTargetIds = {}; // object that stores target info
 
 
     /* FUNCTIONS 
     =============================================== */
 
-    /* @return array of strings */
-    function getTargetIds(srcs) {
-        var targs = [];
-        for (i = 0; i < srcs.length; i += 1) {
-            targs.push(srcs[i].getAttribute('data-accordion-target'));
+    /* populate aTargetIds object w sources  */
+    function getTargetIds() {
+        var targetId, i;
+        for (i = 0; i < aSources.length; i += 1) {
+            targetId = aSources[i].getAttribute('data-accordion-target');
+            if (aTargetIds.hasOwnProperty(targetId)) {
+                aTargetIds[targetId].sources.push(aSources[i]);
+            } else {
+                aTargetIds[targetId] = {
+                    sources: [aSources[i]]
+                };
+            }
         }
-        return targs;
     }
 
-    /* Creates an array of target heights to be used for the transition
-     * of each individual target. The heights are collected before they
-     * are set to zero
-      @param targetIds:array
-      @return array
+    /* populate the 'height' property for each target in the
+     * aTargets object
      */
-    function getTargetHeights(targetIds) {
-        var heights = [],
-            elem;
-        for (i = 0; i < targetIds.length; i += 1) {
-            elem = document.getElementById(targetIds[i]);
-            heights.push(elem.clientHeight);
+    function getTargetHeights() {
+        var tId, elem;
+        for (tId in aTargetIds) {
+            if (aTargetIds.hasOwnProperty(tId)) {
+                elem = document.getElementById(tId);
+                aTargetIds[tId].height = elem.clientHeight;
+            }
         }
-        return heights;
     }
 
     /* Sets the target element height to zero 
-     * @param targetId:string
+     * param: targetId (string)
      */
     function zeroHeight(targetId) {
         document.getElementById(targetId).style.height = '0';
     }
 
-    /* Adds a 'click' listener to a Source element
-     * @param aSrc:object - source element
-     * @param tId:string - target Id
-     * @param tHeight:string - target height
-     * @param singleOpen:boolean - if true, only one target open at a time
-     *                           - if false, each click is a toggle for that element
-     */
-    function addAccordionListener(aSrc, tId, tHeight, singleOpen) {
-        aSrc.addEventListener('click', function (e) {
-            if (singleOpen) {
-                // close all elements
-                for (i = 0; i < aTargetIds.length; i += 1) {
-                    document.getElementById(aTargetIds[i]).style.height = '0';
+    /* Sets all target element heights to zero */
+    function zeroAllElementHeights() {
+        var tId, i;
+        for (tId in aTargetIds) {
+            if (aTargetIds.hasOwnProperty(tId)) {
+                zeroHeight(tId);
+                if (icons) {
+                    for (i = 0; i < aTargetIds[tId].sources.length; i += 1) {
+                        aTargetIds[tId].sources[i].classList.remove('accordion-open');
+                        aTargetIds[tId].sources[i].classList.add('accordion-closed');
+                    }
                 }
             }
-            var theTarget = document.getElementById(tId);
-            // if toggle open / closed state
-            if (theTarget.clientHeight === 0) {
-                theTarget.style.height = tHeight + 'px';
-            } else {
-                theTarget.style.height = '0';
+        }
+    }
+
+    /* The Event Handler*/
+    function accordionAction(e) {
+        var src = e.target;
+        var tId = e.target.getAttribute('data-accordion-target');
+        var theTarget = document.getElementById(tId);
+        var prop, i;
+
+        if (singleOpen) {
+            // make sure all sources are closed
+            zeroAllElementHeights();
+            // and all sources have a class of 'accordion-closed'
+            for (prop in aTargetIds) {
+                if (aTargetIds.hasOwnProperty(prop)) {
+                    if (icons) {
+                        for (i = 0; i < aTargetIds[prop].sources.length; i += 1) {
+                            aTargetIds[prop].sources[i].classList.remove('accordion-open');
+                            aTargetIds[prop].sources[i].classList.add('accordion-closed');
+                        }
+                    }
+                }
             }
-        });
+        }
+        // toggle open/closed state
+        if (theTarget.clientHeight === 0) {
+            // open target element
+            theTarget.style.height = aTargetIds[tId].height + 'px';
+            // change source(s) icon
+            if (icons) {
+                for (i = 0; i < aTargetIds[tId].sources.length; i += 1) {
+                    aTargetIds[tId].sources[i].classList.remove('accordion-closed');
+                    aTargetIds[tId].sources[i].classList.add('accordion-open');
+                }
+            }
+        } else {
+            theTarget.style.height = '0';
+            if (icons) {
+                for (i = 0; i < aTargetIds[tId].sources.length; i += 1) {
+                    aTargetIds[tId].sources[i].classList.remove('accordion-open');
+                    aTargetIds[tId].sources[i].classList.add('accordion-closed');
+                }
+            }
+        }
+    }
+
+    /* Adds a 'click' listener to all Source elements */
+    function addListenersToSources() {
+        var srcs, tId, i;
+        for (tId in aTargetIds) {
+            if (aTargetIds.hasOwnProperty(tId)) {
+                srcs = aTargetIds[tId].sources;
+                for (i = 0; i < srcs.length; i += 1) {
+                    srcs[i].addEventListener('click', accordionAction);
+                }
+            }
+        }
     }
 
 
@@ -79,20 +148,15 @@
     aSources = document.querySelectorAll('[data-accordion-target]');
 
     // get the accordion target ids from the sources
-    aTargetIds = getTargetIds(aSources);
+    getTargetIds();
 
     // Get the height of each of the targets.
-    aTargetHeights = getTargetHeights(aTargetIds);
+    getTargetHeights();
 
     // Set height of all targets to zero
-    for (i = 0; i < aTargetIds.length; i += 1) {
-        zeroHeight(aTargetIds[i]);
-    }
-
+    zeroAllElementHeights();
 
     // add click eventListener to each Source element
-    for (i = 0; i < aSources.length; i += 1) {
-        addAccordionListener(aSources[i], aTargetIds[i], aTargetHeights[i], true);
-    }
+    addListenersToSources();
 
 }());

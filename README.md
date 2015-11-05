@@ -21,7 +21,8 @@ The target element must also have:   class="accordion-target"
 </p>
 ```
 
-The variable 'singleOpen' is a boolean. If true, only one item can be open at a time. If false, multiple items may be open concurently.
+The variable 'singleOpen': If true, only one item can be open at a time. If false, multiple items may be open concurently.  
+The variable 'icons': If true, show +/- icons.
 
 The transition time can be set in the accordion.mak.css file which has one selector w two properties:
 
