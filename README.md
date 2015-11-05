@@ -1,7 +1,5 @@
 #Accordion.mak.js
 
-The two required files are in the 'dist/' folder. 
-
 This JavaScript accordion is designed to allow any element to be a source link to a target accordion element. More than one source element can target the same accordion item. There is no restriction to a specific container, any element on the page can be a source link to an accordion element.
 
 Source element must contain 'data-accordion-target' attribute:
